@@ -1,0 +1,3 @@
+server:
+  port: 8022
+spring:  application:    name: movie-service  cloud:    config:      uri: http://http://localhost:8888
