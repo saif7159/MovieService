@@ -5,16 +5,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+
 
 @Entity
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
+
 public class Movie {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,5 +33,72 @@ public class Movie {
 		this.rent = rent;
 
 	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getMovie() {
+		return movie;
+	}
+
+	public void setMovie(String movie) {
+		this.movie = movie;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getDirector() {
+		return director;
+	}
+
+	public void setDirector(String director) {
+		this.director = director;
+	}
+
+	public int getYear() {
+		return year;
+	}
+
+	public void setYear(int year) {
+		this.year = year;
+	}
+
+	public float getRating() {
+		return rating;
+	}
+
+	public void setRating(float rating) {
+		this.rating = rating;
+	}
+
+	public float getRent() {
+		return rent;
+	}
+
+	public void setRent(float rent) {
+		this.rent = rent;
+	}
+
+	@Override
+	public String toString() {
+		return "Movie [id=" + id + ", movie=" + movie + ", category=" + category + ", director=" + director + ", year="
+				+ year + ", rating=" + rating + ", rent=" + rent + "]";
+	}
+	
+	
+	
+	
+	
 
 }

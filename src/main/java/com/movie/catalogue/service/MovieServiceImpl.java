@@ -16,8 +16,8 @@ public class MovieServiceImpl implements MovieService {
 	private MovieRepository repo;
 
 	@Override
-	public void createMovie(Movie movie) {
-		repo.saveAndFlush(movie);
+	public Movie createMovie(Movie movie) {
+		return repo.saveAndFlush(movie);
 
 	}
 

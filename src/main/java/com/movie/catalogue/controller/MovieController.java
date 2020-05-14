@@ -23,8 +23,8 @@ public class MovieController {
 	private MovieService service;
 
 	@PostMapping("/createmovie")
-	public void createMovie(@RequestBody Movie movie) {
-		service.createMovie(movie);
+	public Movie createMovie(@RequestBody Movie movie) {
+		return service.createMovie(movie);
 	}
 
 	@GetMapping("/getmovie/mid/{id}")
