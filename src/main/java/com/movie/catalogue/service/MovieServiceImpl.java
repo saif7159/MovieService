@@ -16,8 +16,8 @@ public class MovieServiceImpl implements MovieService {
 	private MovieRepository repo;
 
 	@Override
-	public void createMovie(Movie movie) {
-		repo.saveAndFlush(movie);
+	public Movie createMovie(Movie movie) {
+		return repo.saveAndFlush(movie);
 
 	}
 
@@ -34,16 +34,19 @@ public class MovieServiceImpl implements MovieService {
 	}
 
 	@Override
+	@Cacheable(value = "movie", key = "#movie")
 	public List<Movie> getMovieByMovie(String movie) {
 		return repo.findByMovie(movie);
 	}
 
 	@Override
+	@Cacheable(value = "movie", key = "#director")
 	public List<Movie> getMovieByDirector(String director) {
 		return repo.findByDirector(director);
 	}
 
 	@Override
+	@Cacheable(value = "movie", key = "#year")
 	public List<Movie> getMovieByYear(Integer year) {
 		return repo.findByYear(year);
 	}
@@ -54,6 +57,7 @@ public class MovieServiceImpl implements MovieService {
 	}
 
 	@Override
+	@Cacheable(value = "movie", key = "#all")
 	public List<Movie> getAllMovies() {
 		return repo.findAll();
 	}

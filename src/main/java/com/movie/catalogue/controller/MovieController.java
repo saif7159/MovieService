@@ -1,4 +1,4 @@
-package com.movie.catalogue.controller;
+	package com.movie.catalogue.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,16 +26,20 @@ import com.movie.catalogue.service.MovieService;
 public class MovieController {
 	@Autowired
 	private MovieService service;
+	@Autowired
+	private CacheManager manager;
 
 	@PostMapping("/createmovie")
-	public void createMovie(@RequestBody Movie movie) {
-		service.createMovie(movie);
+	public Movie createMovie(@RequestBody Movie movie) {
+		manager.getCache("movie").clear();
+		return service.createMovie(movie);
+		
 	}
 
-	@GetMapping("/getmovie/movieid/{id}")
+	@GetMapping("/getmovie/mid/{id}")
 	public Optional<Movie> getMovieById(@Valid @PathVariable int id) throws MovieNotFoundException  {
 		Optional<Movie> movie = service.getMovie(id);
-		if(!movie.isPresent()) throw new MovieNotFoundException(ExceptionMessage.EMPTY.getMessage()+id);
+		//if(movie.isEmpty()) throw new MovieNotFoundException(ExceptionMessage.EMPTY.getMessage()+id);
 		return movie;
 	}
 
@@ -46,7 +51,7 @@ public class MovieController {
 	@GetMapping("/getmovie/mname/{name}")
 	public List<Movie> getByMovie(@PathVariable String name) throws MovieNotFoundException {
 		List<Movie> movie = service.getMovieByMovie(name);
-		if(!movie.isEmpty()) throw new MovieNotFoundException(ExceptionMessage.Movie_Name_Not_Found.getMessage() +name);
+		if(movie.isEmpty()) throw new MovieNotFoundException(ExceptionMessage.Movie_Name_Not_Found.getMessage() +name);
 		return movie;
 		
 	}
@@ -54,27 +59,30 @@ public class MovieController {
 	@GetMapping("/getmovie/dname/{name}")
 	public List<Movie> getByDirector(@PathVariable String name) throws MovieNotFoundException {
 		List<Movie> movie = service.getMovieByDirector(name);
-		if(!movie.isEmpty()) throw new MovieNotFoundException(ExceptionMessage.Movie_Director_Not_Found.getMessage() +name);
+		if(movie.isEmpty()) throw new MovieNotFoundException(ExceptionMessage.Movie_Director_Not_Found.getMessage() +name);
 		return movie;
 	}
 
 	@GetMapping("/getmovie/myear/{year}")
 	public List<Movie> getByDirector(@PathVariable int year) throws MovieNotFoundException {
 		List<Movie> movie = service.getMovieByYear(year);
-		if(!movie.isEmpty()) throw new MovieNotFoundException(ExceptionMessage.Movie_withyear_Not_Found.getMessage() +year);
+		if(movie.isEmpty()) throw new MovieNotFoundException(ExceptionMessage.Movie_withyear_Not_Found.getMessage() +year);
 		return movie;
 	}
 
 	@PutMapping("/updatemovie/{id}")
 	public void updateMovieById(@RequestBody Movie movie, @PathVariable int id) {
 		Movie update = new Movie(id, movie.getMovie(), movie.getCategory(), movie.getDirector(), movie.getYear(),
-				movie.getRating(), movie.getRent());
+				movie.getRating(), movie.getRent(), movie.isAvailable());
+		manager.getCache("movie").clear();
 		service.updateMovieById(update);
 	}
 
 	@DeleteMapping("/removemovie/{id}")
-	public void deleteById(@PathVariable int id) {
-		if(service.findById(id).isEmpty()) throw new MovieNotFoundException(ExceptionMessage.NO_RECORD.getMessage()+id);
+	public void deleteById(@PathVariable int id) throws MovieNotFoundException {
+		Optional<Movie> movie = service.getMovie(id);
+		if(movie.isEmpty()) throw new MovieNotFoundException(ExceptionMessage.NO_RECORD.getMessage()+id);
+		manager.getCache("movie").clear();
 		service.deleteMovieById(id);
 	}
 

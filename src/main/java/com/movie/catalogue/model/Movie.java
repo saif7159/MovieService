@@ -24,16 +24,15 @@ public class Movie {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	@SuppressWarnings("deprecation")
-	@NotEmpty
 	private String movie;
 	private String category;
 	private String director;
 	private int year;
 	private float rating;
 	private float rent;
+	private boolean available;
 
-	public Movie(int id, String movie, String category, String director, int year, float rating, float rent) {
+	public Movie(int id, String movie, String category, String director, int year, float rating, float rent, boolean available) {
 		super();
 		this.id = id;
 		this.movie = movie;
@@ -42,6 +41,7 @@ public class Movie {
 		this.year = year;
 		this.rating = rating;
 		this.rent = rent;
+		this.available = available;
 
 	}
 
